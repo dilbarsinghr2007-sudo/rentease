@@ -146,10 +146,10 @@ export default function UpdateVehicles() {
         const formData = new FormData();
 
         formData.append("file", image);
-        formData.append("upload_preset", "vehiclerental_upload");
+        formData.append("upload_preset", "rentease_upload");
 
         const response = await fetch(
-          "https://api.cloudinary.com/v1_1/di1nxzfwg/image/upload",
+          "https://api.cloudinary.com/v1_1/xjueswrs/image/upload",
           {
             method: "POST",
             body: formData,
@@ -205,7 +205,7 @@ export default function UpdateVehicles() {
       <div
         className="hero inner-page"
         style={{
-          backgroundImage: 'url("/images/hero_1_aa.jpg")',
+          backgroundImage: 'url("images/hero_1_aa.jpg")',
         }}
       >
         <div className="container">

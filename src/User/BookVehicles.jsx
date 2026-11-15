@@ -33,13 +33,19 @@ export default function BookVehicles() {
     return () => clearTimeout(timer);
   }, []);
 
+
   // Calculate total rent based on the selected dates
   useEffect(() => {
     if (startDate && endDate && vehicle?.rent) {
       const start = new Date(startDate);
       const end = new Date(endDate);
 
-      if (end >= start) {
+      // Extract numeric rent from values like "95$"
+      const rentPerDay = parseFloat(
+        String(vehicle.rent).replace(/[^0-9.]/g, "")
+      );
+
+      if (end >= start && Number.isFinite(rentPerDay)) {
         const differenceInTime = end.getTime() - start.getTime();
 
         // Include both the start date and end date
@@ -48,12 +54,15 @@ export default function BookVehicles() {
             differenceInTime / (1000 * 60 * 60 * 24)
           ) + 1;
 
-        setTotalRent(totalDays * Number(vehicle.rent));
+        setTotalRent(totalDays * rentPerDay);
       } else {
         setTotalRent("");
       }
+    } else {
+      setTotalRent("");
     }
   }, [startDate, endDate, vehicle]);
+
 
   // Fetch the selected vehicle from Firestore
   const getSingleVehicle = async () => {
@@ -188,7 +197,7 @@ export default function BookVehicles() {
       <div
         className="hero inner-page"
         style={{
-          backgroundImage: 'url("/images/hero_1_aa.jpg")',
+          backgroundImage: 'url("images/hero_1_aa.jpg")',
         }}
       >
         <div className="container">

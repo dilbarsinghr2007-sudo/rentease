@@ -86,7 +86,7 @@ export default function MyBookings() {
       {/* Hero Section */}
       <div
         className="hero inner-page"
-        style={{ backgroundImage: 'url("/images/hero_1_aa.jpg")' }}
+        style={{ backgroundImage: 'url("images/hero_1_aa.jpg")' }}
       >
         <div className="container">
           <div className="row align-items-end">
@@ -172,7 +172,7 @@ export default function MyBookings() {
                       </p>
 
                       <p>
-                        <strong>Rent / Day:</strong> ₹{booking.rent}
+                        <strong>Rent / Day:</strong> {booking.rent}
                       </p>
 
                       <hr />
@@ -203,7 +203,7 @@ export default function MyBookings() {
 
                       {/* Total Booking Cost */}
                       <h5 className="text-success fw-bold">
-                        Total Rent : ₹{booking.totalRent}
+                        Total Rent : {booking.totalRent} $
                       </h5>
                     </div>
 

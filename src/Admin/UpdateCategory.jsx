@@ -71,10 +71,10 @@ export default function UpdateCategory() {
       if (poster) {
         const formData = new FormData();
         formData.append("file", poster);
-        formData.append("upload_preset", "vehiclerental_upload");
+        formData.append("upload_preset", "rentease_upload");
 
         const response = await fetch(
-          "https://cloudinary.com",
+          "https://api.cloudinary.com/v1_1/xjueswrs/image/upload",
           {
             method: "POST",
             body: formData,
@@ -101,7 +101,7 @@ export default function UpdateCategory() {
       });
 
       toast.success("Data updated successfully", { position: "top-center" });
-      
+
       // Redirect to manage page after 2 seconds
       setTimeout(() => {
         setSubmitLoading(false);
@@ -123,8 +123,8 @@ export default function UpdateCategory() {
   return (
     <>
       {/* Header Banner */}
-      <div 
-        className="hero inner-page" 
+      <div
+        className="hero inner-page"
         style={{ backgroundImage: 'url("images/hero_1_aa.jpg")' }}
       >
         <div className="container">
@@ -159,7 +159,7 @@ export default function UpdateCategory() {
             <div className="col-lg-8 col-md-10 col-12">
               <form action="#" method="post" onSubmit={updateCategory}>
                 <div className="form-group row">
-                  
+
                   {/* Name Input */}
                   <div className="col-12 mb-3">
                     <label>Category Name</label>

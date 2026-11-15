@@ -1,36 +1,54 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 import { db } from "../Firebase";
 
 export default function ManageEnquiries() {
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get enquiries from database in real-time
-    const getQueries = () => {
-      const queryRef = collection(db, "queries");
-      
-      const unsubscribe = onSnapshot(queryRef, (snapshot) => {
+    const queryRef = collection(db, "queries");
+
+    const unsubscribe = onSnapshot(
+      queryRef,
+      (snapshot) => {
         const queries = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
         setData(queries);
-      });
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching enquiries:", error);
+        setLoading(false);
+      }
+    );
 
-      // Stop listening when page closes
-      return () => unsubscribe();
-    };
-
-    getQueries();
+    // Stop listening when page closes
+    return () => unsubscribe();
   }, []);
+
+  // Show loading spinner
+  if (loading) {
+    return (
+      <div
+        className="d-flex justify-content-center align-items-center"
+        style={{ height: "100vh" }}
+      >
+        <ClipLoader color="#0d6efd" loading={true} size={80} />
+      </div>
+    );
+  }
 
   return (
     <>
       {/* Header banner */}
-      <div 
-        className="hero inner-page" 
+      <div
+        className="hero inner-page"
         style={{ backgroundImage: 'url("/images/hero_1_aa.jpg")' }}
       >
         <div className="container">
@@ -54,7 +72,6 @@ export default function ManageEnquiries() {
       {/* Main table area */}
       <div className="site-section bg-light" id="contact-section">
         <div className="container">
-          
           {/* Title */}
           <div className="row justify-content-center text-center">
             <div className="col-lg-7">
@@ -79,32 +96,46 @@ export default function ManageEnquiries() {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.map((el, index) => (
-                        <tr key={el.id || index}>
-                          <th scope="row">{index + 1}</th>
-                          <td>{el.name}</td>
-                          <td>{el.email}</td>
-                          <td>{el.subject}</td>
-                          <td>{el.message}</td>
-                          <td>
-                            {/* Open email in Gmail */}
-                            <a
-                              href={`https://google.com{el.email}&su=Replying to your enquiry&body=Hi ${el.name},`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <button className="btn">✉ Reply</button>
-                            </a>
+                      {data.length === 0 ? (
+                        <tr>
+                          <td colSpan="6" className="text-center">
+                            No enquiries found.
                           </td>
                         </tr>
-                      ))}
+                      ) : (
+                        data.map((el, index) => (
+                          <tr key={el.id || index}>
+                            <th scope="row">{index + 1}</th>
+                            <td>{el.name}</td>
+                            <td>{el.email}</td>
+                            <td>{el.subject}</td>
+                            <td>{el.message}</td>
+                            <td>
+                              {/* Open email in Gmail */}
+                              <a
+                                href={`https://google.com{encodeURIComponent(
+                                  el.email || ""
+                                )}&su=${encodeURIComponent(
+                                  "Replying to your enquiry"
+                                )}&body=${encodeURIComponent(
+                                  `Hi ${el.name || ""},\n\n`
+                                )}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn btn-primary btn-sm"
+                              >
+                                ✉ Reply
+                              </a>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </>
